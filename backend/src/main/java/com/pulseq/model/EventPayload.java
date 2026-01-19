@@ -4,6 +4,7 @@ public class EventPayload {
 
     public String type;
     public String data;
+    public int retryCount = 0;
 
     public EventPayload() {}
 

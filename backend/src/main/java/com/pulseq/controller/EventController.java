@@ -1,9 +1,13 @@
 package com.pulseq.controller;
 
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pulseq.model.EventPayload;
 import com.pulseq.queue.RedisQueueService;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/events")
@@ -18,7 +22,7 @@ public class EventController {
 
     @PostMapping
     public String publish(@RequestBody EventPayload payload) throws Exception {
-        queue.push(mapper.writeValueAsString(payload));
+        queue.push(RedisQueueService.MAIN, mapper.writeValueAsString(payload));
         return "QUEUED";
     }
 }
