@@ -9,6 +9,7 @@ import com.pulseq.model.DeadEvent;
 import com.pulseq.model.EventPayload;
 import com.pulseq.queue.RedisQueueService;
 import com.pulseq.repository.DeadEventRepository;
+import com.pulseq.websocket.MetricsSocket;
 
 @Component
 public class EventWorker {
@@ -16,16 +17,19 @@ public class EventWorker {
     private final RedisQueueService queue;
     private final MetricsService metrics;
     private final DeadEventRepository repo;
+    private final MetricsSocket socket;
     private final ObjectMapper mapper = new ObjectMapper();
 
     public EventWorker(
             RedisQueueService queue,
             MetricsService metrics,
-            DeadEventRepository repo
+            DeadEventRepository repo,
+            MetricsSocket socket
     ) {
         this.queue = queue;
         this.metrics = metrics;
         this.repo = repo;
+        this.socket = socket;
     }
 
     // ===============================
@@ -38,7 +42,7 @@ public class EventWorker {
         if (json == null) return;
 
         metrics.received.incrementAndGet();
-
+        socket.push();
         EventPayload event;
 
         try {
@@ -58,6 +62,7 @@ public class EventWorker {
 
             metrics.processed.incrementAndGet();
             System.out.println("✅ SUCCESS → " + event.type);
+            socket.push();
 
         } catch (Exception ex) {
 
@@ -68,39 +73,21 @@ public class EventWorker {
                 metrics.retried.incrementAndGet();
 
                 try {
-                    queue.push(
-                            RedisQueueService.RETRY,
-                            mapper.writeValueAsString(event)
-                    );
+                    queue.push(RedisQueueService.RETRY,mapper.writeValueAsString(event));
                 } catch (Exception ignored) {}
 
-                System.out.println(
-                        "🔁 RETRY " + event.retryCount + " → " + event.type
-                );
+                System.out.println("🔁 RETRY " + event.retryCount + " → " + event.type);
+                socket.push();
 
             } else {
-
                 metrics.dead.incrementAndGet();
-
                 try {
-                    queue.push(
-                            RedisQueueService.DEAD,
-                            mapper.writeValueAsString(event)
-                    );
-
-                    repo.save(
-                            new DeadEvent(
-                                    event.type,
-                                    json,
-                                    event.retryCount
-                            )
-                    );
-
+                    queue.push(RedisQueueService.DEAD,mapper.writeValueAsString(event));
+                    repo.save(new DeadEvent(event.type,json,event.retryCount));
                 } catch (Exception ignored) {}
 
-                System.out.println(
-                        "💀 DEAD EVENT SAVED → " + event.type
-                );
+                System.out.println("💀 DEAD EVENT SAVED → " + event.type);
+                socket.push();
             }
         }
     }
@@ -115,6 +102,7 @@ public class EventWorker {
 
         if (retryEvent != null) {
             queue.push(RedisQueueService.MAIN, retryEvent);
+            socket.push();
         }
     }
 }
