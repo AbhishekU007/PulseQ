@@ -56,7 +56,7 @@ public class EventWorker {
             System.out.println("Processing → " + event.type);
 
             // simulate failure
-            if (Math.random() < 0.4) {
+            if (Math.random() < 0.9) {
                 throw new RuntimeException("Random failure");
             }
 
