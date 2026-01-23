@@ -1,16 +1,15 @@
-import SockJS from "sockjs-client/dist/sockjs";
+import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 
-export function connectMetrics(setMetrics) {
+export function connectMetrics(onMessage) {
+  const socket = new SockJS("http://localhost:8080/ws");
+
   const client = new Client({
-    webSocketFactory: () =>
-      new SockJS("http://localhost:8080/ws"),
-
-    reconnectDelay: 2000,
-
+    webSocketFactory: () => socket,
+    reconnectDelay: 3000,
     onConnect: () => {
       client.subscribe("/topic/metrics", msg => {
-        setMetrics(JSON.parse(msg.body));
+        onMessage(JSON.parse(msg.body));
       });
     }
   });
