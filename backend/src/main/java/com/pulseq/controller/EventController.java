@@ -1,5 +1,7 @@
 package com.pulseq.controller;
 
+import java.util.UUID;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +24,8 @@ public class EventController {
 
     @PostMapping
     public String publish(@RequestBody EventPayload payload) throws Exception {
+        payload.id = UUID.randomUUID().toString();
         queue.push(RedisQueueService.MAIN, mapper.writeValueAsString(payload));
-        return "QUEUED";
+        return "QUEUED " + payload.id;
     }
 }

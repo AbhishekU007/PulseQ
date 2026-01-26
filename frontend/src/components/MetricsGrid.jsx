@@ -1,7 +1,15 @@
 import StatCard from "./StatCard";
 
 export default function MetricsGrid({ metrics }) {
-  if (!metrics) return null;
+  if (!metrics) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className="rounded-2xl p-6 border border-white/10 bg-white/[0.02] animate-pulse h-24"></div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

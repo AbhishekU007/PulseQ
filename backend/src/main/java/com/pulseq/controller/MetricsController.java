@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pulseq.metrics.LatencyTracker;
 import com.pulseq.metrics.MetricsService;
 import com.pulseq.queue.RedisQueueService;
 
@@ -14,13 +15,16 @@ public class MetricsController {
 
     private final MetricsService metrics;
     private final RedisQueueService queue;
-
+    private final LatencyTracker latency;
+    
     public MetricsController(
             MetricsService metrics,
-            RedisQueueService queue
+            RedisQueueService queue,
+            LatencyTracker latency
     ) {
         this.metrics = metrics;
         this.queue = queue;
+        this.latency = latency;
     }
 
     @GetMapping("/metrics")
@@ -36,6 +40,7 @@ public class MetricsController {
         data.put("mainQueueSize", queue.size(RedisQueueService.MAIN));
         data.put("retryQueueSize", queue.size(RedisQueueService.RETRY));
         data.put("deadQueueSize", queue.size(RedisQueueService.DEAD));
+        data.put("latency", latency.snapshot());
 
         return data;
     }

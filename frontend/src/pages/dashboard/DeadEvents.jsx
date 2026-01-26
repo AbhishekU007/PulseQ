@@ -1,7 +1,9 @@
+import DeadEventsTable from "../../components/DeadEventsTable";
+
 export default function DeadEvents() {
   return (
-    <div className="text-xl font-semibold">
-      Dead Events
+    <div className="space-y-6">
+      <DeadEventsTable />
     </div>
   );
 }

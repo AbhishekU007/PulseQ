@@ -1,5 +1,7 @@
 package com.pulseq.queue;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -31,4 +33,9 @@ public class RedisQueueService {
     public Long size(String queue) {
         return redisTemplate.opsForList().size(queue);
     }
+
+    public List<String> peek(String queue, int limit) {
+    return redisTemplate.opsForList().range(queue, 0, limit - 1);
+}
+
 }

@@ -5,3 +5,6 @@ export const sendEvent = (type) =>
     type,
     data: "user-42"
   });
+
+  export const fetchDeadEvents = () =>
+  axios.get("http://localhost:8080/dead-events").then(res => res.data);
