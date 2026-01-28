@@ -124,7 +124,8 @@ const PulseQLanding = () => {
             
             <div className="text-base md:text-lg text-gray-400 mb-8 md:mb-12">
               <p className="opacity-0" style={{ animation: `fadeIn 0.5s ease-out 0s forwards` }}>
-                A real-time event processing engine that simulates production-scale failures, retries, queues, and metrics — exactly how modern systems behave.
+                A real-time event processing engine that simulates production-scale failures, retries, queues, and metrics. 
+                <p>Exactly how modern systems behave.</p>
               </p>
             </div>
 
