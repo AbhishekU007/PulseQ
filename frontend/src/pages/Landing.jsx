@@ -114,8 +114,9 @@ const PulseQLanding = () => {
         {/* Left Side - Content */}
         <div className="relative z-10 w-full md:w-1/2 px-6 md:px-12 py-12 md:py-20">
           <div className="max-w-xl md:ml-12">
-            <h1 className="text-5xl md:text-7xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-indigo-400 via-violet-400 to-indigo-400 bg-clip-text text-transparent">
-              PulseQ
+            <h1 className="text-5xl md:text-7xl font-bold mb-4 md:mb-6">
+              <span className="text-white">Pulse</span>
+              <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-indigo-400 bg-clip-text text-transparent">Q</span>
             </h1>
             <p className="text-xl md:text-3xl text-indigo-300 mb-6 md:mb-8 font-light">
               Where distributed systems come alive.

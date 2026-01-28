@@ -6,9 +6,11 @@ const link =
 export default function Sidebar() {
   return (
     <aside className="w-64 border-r border-white/10 p-4">
-      <h1 className="text-xl font-bold mb-8">
-        Pulse<span className="text-indigo-400">Q</span>
-      </h1>
+      <NavLink to="/"> 
+        <h1 className="text-xl font-bold mb-8">
+          <span className="text-white">Pulse</span><span className="text-indigo-400">Q</span>
+        </h1>
+      </NavLink>
 
       <nav className="space-y-2">
         <NavLink to="/dashboard" end className={link}>
