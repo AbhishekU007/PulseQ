@@ -7,12 +7,14 @@ export default function Queues() {
   const [retry, setRetry] = useState([]);
   const [dead, setDead] = useState([]);
 
+  const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+
   const fetchQueues = useCallback(async () => {
     try {
       const [m, r, d] = await Promise.all([
-        axios.get("http://localhost:8080/queues/main"),
-        axios.get("http://localhost:8080/queues/retry"),
-        axios.get("http://localhost:8080/queues/dead")
+        axios.get(`${BASE_URL}/queues/main`),
+        axios.get(`${BASE_URL}/queues/retry`),
+        axios.get(`${BASE_URL}/queues/dead`)
       ]);
 
       setMain(m.data);

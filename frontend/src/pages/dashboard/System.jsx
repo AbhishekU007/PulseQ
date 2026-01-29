@@ -5,9 +5,11 @@ export default function System() {
 
   const [sys, setSys] = useState(null);
 
+  const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+
   const load = useCallback(async () => {
     try {
-      const res = await axios.get("http://localhost:8080/system");
+      const res = await axios.get(`${BASE_URL}/system`);
       setSys(res.data);
     } catch (err) {
       console.error("Failed to load system status:", err);
