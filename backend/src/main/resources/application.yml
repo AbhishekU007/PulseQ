@@ -6,4 +6,10 @@ spring:
           time_zone: UTC
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/pulseq?options=-c%20TimeZone=UTC
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+  redis:
+    url: ${SPRING_REDIS_URL}
+    ssl: true
