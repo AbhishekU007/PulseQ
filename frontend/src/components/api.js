@@ -1,10 +1,12 @@
 import axios from "axios";
 
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+
 export const sendEvent = (type) =>
-  axios.post("http://localhost:8080/events", {
+  axios.post(`${BASE_URL}/events`, {
     type,
     data: "user-42"
   });
 
-  export const fetchDeadEvents = () =>
-  axios.get("http://localhost:8080/dead-events").then(res => res.data);
+export const fetchDeadEvents = () =>
+  axios.get(`${BASE_URL}/dead-events`).then(res => res.data);

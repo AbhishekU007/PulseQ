@@ -5,11 +5,12 @@ let stompClient = null;
 let history = [];
 const MAX_POINTS = 30;
 
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+
 export function connectMetrics(onMetrics, onEvent) {
-  // Don't reconnect if already connected
   if (stompClient?.connected) return;
 
-  const socket = new SockJS("http://localhost:8080/ws");
+  const socket = new SockJS(`${BASE_URL}/ws`);
 
   stompClient = new Client({
     webSocketFactory: () => socket,
@@ -18,11 +19,10 @@ export function connectMetrics(onMetrics, onEvent) {
   });
 
   stompClient.onConnect = () => {
-    // Subscribe to metrics
+
     stompClient.subscribe("/topic/metrics", msg => {
       const data = JSON.parse(msg.body);
 
-      // Build history point
       const point = {
         time: new Date().toLocaleTimeString(),
         main: data.mainQueueSize,
@@ -31,19 +31,14 @@ export function connectMetrics(onMetrics, onEvent) {
       };
 
       history.push(point);
+      if (history.length > MAX_POINTS) history.shift();
 
-      if (history.length > MAX_POINTS) {
-        history.shift();
-      }
-
-      // Pass both metrics and history
       onMetrics({
         metrics: data,
         history: [...history]
       });
     });
 
-    // Subscribe to events (if callback provided)
     if (onEvent) {
       stompClient.subscribe("/topic/events", msg => {
         onEvent(JSON.parse(msg.body));
@@ -51,7 +46,7 @@ export function connectMetrics(onMetrics, onEvent) {
     }
   };
 
-  stompClient.onStompError = (frame) => {
+  stompClient.onStompError = frame => {
     console.error("STOMP error:", frame);
   };
 
@@ -61,5 +56,5 @@ export function connectMetrics(onMetrics, onEvent) {
 export function disconnectSocket() {
   stompClient?.deactivate();
   stompClient = null;
-  history = []; // Clear history on disconnect
+  history = [];
 }
